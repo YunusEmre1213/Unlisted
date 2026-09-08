@@ -1107,7 +1107,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 149cb7f09d9ff45438590ef3f15f87d9, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -2155,6 +2155,7 @@ GameObject:
   - component: {fileID: 902527890}
   - component: {fileID: 902527889}
   - component: {fileID: 902527888}
+  - component: {fileID: 902527892}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2190,8 +2191,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f757c7fc8b83ba54986ced2663448035, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Backrooms.Player.PlayerMovement
-  moveSpeed: 4
+  walkSpeed: 4
+  sprintSpeed: 7
+  crouchSpeed: 2
+  jumpHeight: 1.2
   gravity: -9.81
+  jumpStartClip: {fileID: 8300000, guid: df49938a1860650418b6d5654ed436be, type: 3}
+  jumpLandClip: {fileID: 8300000, guid: 37cdbcb02c3324849ac457dfc5b1058e, type: 3}
+  jumpVolume: 0.6
+  minAirTimeForLandSound: 0.15
+  cameraTransform: {fileID: 961739753}
+  standingControllerHeight: 1.8
+  crouchingControllerHeight: 1
+  standingControllerCenter: {x: 0, y: 1, z: 0}
+  crouchingControllerCenter: {x: 0, y: 0.5, z: 0}
+  standingCameraHeight: 1.6
+  crouchingCameraHeight: 1
+  crouchTransitionSpeed: 8
 --- !u!143 &902527890
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2233,6 +2249,35 @@ Transform:
   - {fileID: 961739753}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &902527892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 902527887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a64557c6d9b93745a9e5a84e7311d5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Backrooms.Player.PlayerFootsteps
+  walkClips:
+  - {fileID: 8300000, guid: 5e265270fb85126479eef52d8fce3b08, type: 3}
+  - {fileID: 8300000, guid: 3701a5fdf99882f40bc00eb9053eec92, type: 3}
+  - {fileID: 8300000, guid: 2f949b40b7283404099a802630fb2077, type: 3}
+  - {fileID: 8300000, guid: dfff2b3c7dfb43c419592789f0a6ab81, type: 3}
+  walkStepInterval: 0.5
+  walkVolume: 0.5
+  runClips:
+  - {fileID: 8300000, guid: b25225c72201cd740b16b95b86d57940, type: 3}
+  - {fileID: 8300000, guid: 5e8e6e435e65fe146b588b8a9d2df461, type: 3}
+  - {fileID: 8300000, guid: 8900ae4b297a017448ddb78ea0c2d4da, type: 3}
+  - {fileID: 8300000, guid: be6f9c5983062b9488c5423a7e1fd1e0, type: 3}
+  runStepInterval: 0.32
+  runVolume: 0.7
+  crouchStepInterval: 0.7
+  crouchVolume: 0.2
+  minMoveSpeed: 0.1
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -3143,6 +3188,62 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1219962046}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1250491011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1250491013}
+  - component: {fileID: 1250491012}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1250491012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250491011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb869d3c1f8e7d74bad2ee789fd6d814, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Backrooms.Audio.AudioManager
+  baseAmbientClip: {fileID: 8300000, guid: 07d9595013191e741b83bd5a3028a9c2, type: 3}
+  baseAmbientVolume: 0.4
+  passiveLayerClip: {fileID: 8300000, guid: 8841a9ff6d1bcd24ca798f2d2e475a32, type: 3}
+  activeLayerClip: {fileID: 8300000, guid: 46e99e67c4c1dd74eb02e27ba6001d38, type: 3}
+  passiveLayerVolume: 0.3
+  activeLayerVolume: 0.6
+  crossfadeDuration: 1.5
+  fakeClueClips:
+  - {fileID: 8300000, guid: 58a520f96e197944fa5f60081a98309b, type: 3}
+  - {fileID: 8300000, guid: 1c49bba2efad572418c3e4c5651f6d46, type: 3}
+  - {fileID: 8300000, guid: f2fc765bf7fa0cb45b38ead7fb92d7c4, type: 3}
+  fakeClueVolume: 0.7
+--- !u!4 &1250491013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250491011}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1292462353
 GameObject:
   m_ObjectHideFlags: 0
@@ -6520,3 +6621,4 @@ SceneRoots:
   - {fileID: 1966887021}
   - {fileID: 162723139}
   - {fileID: 1987391225}
+  - {fileID: 1250491013}
