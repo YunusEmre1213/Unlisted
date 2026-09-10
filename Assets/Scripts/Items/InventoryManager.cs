@@ -8,7 +8,7 @@ namespace Backrooms.Items
     {
         public static InventoryManager Instance { get; private set; }
 
-        private readonly HashSet<string> collectedItemIds = new HashSet<string>();
+        private readonly Dictionary<string, int> itemCounts = new Dictionary<string, int>();
 
         private void Awake()
         {
@@ -35,22 +35,45 @@ namespace Backrooms.Items
         {
             if (evt.Item == null) return;
 
-            collectedItemIds.Add(evt.Item.itemId);
-            Debug.Log("[Inventory] Toplanan obje: " + evt.Item.displayName);
+            string id = evt.Item.itemId;
+
+            if (itemCounts.ContainsKey(id))
+            {
+                itemCounts[id]++;
+            }
+            else
+            {
+                itemCounts[id] = 1;
+            }
+
+            Debug.Log("[Inventory] Toplanan obje: " + evt.Item.displayName + " (adet: " + itemCounts[id] + ")");
         }
 
         public bool HasItem(string itemId)
         {
-            return collectedItemIds.Contains(itemId);
+            return itemCounts.ContainsKey(itemId) && itemCounts[itemId] > 0;
         }
 
         public bool HasAllItems(IEnumerable<string> itemIds)
         {
             foreach (var id in itemIds)
             {
-                if (!collectedItemIds.Contains(id)) return false;
+                if (!HasItem(id)) return false;
             }
 
+            return true;
+        }
+
+        public int GetItemCount(string itemId)
+        {
+            return itemCounts.ContainsKey(itemId) ? itemCounts[itemId] : 0;
+        }
+
+        public bool ConsumeItem(string itemId)
+        {
+            if (!HasItem(itemId)) return false;
+
+            itemCounts[itemId]--;
             return true;
         }
     }

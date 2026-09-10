@@ -5,7 +5,8 @@ namespace Backrooms.Items
     public enum ItemCategory
     {
         Functional,
-        Personal
+        Personal,
+        Consumable
     }
 
     [CreateAssetMenu(fileName = "NewItem", menuName = "Backrooms/Item Data")]
