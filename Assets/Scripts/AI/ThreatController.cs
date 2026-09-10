@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using Backrooms.Core;
+using Backrooms.Player;
 
 namespace Backrooms.AI
 {
@@ -16,6 +17,8 @@ namespace Backrooms.AI
         [SerializeField] private float detectionAngle = 60f;
         [SerializeField] private float requiredDetectionTime = 1.5f;
         [SerializeField] private float playerHeightOffset = 1f;
+        [SerializeField] private float crouchDetectionMultiplier = 0.6f;
+        [SerializeField] private float heavyBreathingRangeMultiplier = 1.3f;
 
         [Header("Vazgecme Ayarlari")]
         [SerializeField] private float loseSightTime = 4f;
@@ -40,6 +43,9 @@ namespace Backrooms.AI
         private PassiveState passiveState;
         private ActiveChaseState activeChaseState;
 
+        private PlayerMovement playerMovement;
+        private PlayerBreathing playerBreathing;
+
         private void Awake()
         {
             Agent = GetComponent<NavMeshAgent>();
@@ -59,6 +65,12 @@ namespace Backrooms.AI
                 {
                     player = playerObject.transform;
                 }
+            }
+
+            if (player != null)
+            {
+                playerMovement = player.GetComponent<PlayerMovement>();
+                playerBreathing = player.GetComponent<PlayerBreathing>();
             }
 
             ChangeState(passiveState);
@@ -101,17 +113,26 @@ namespace Backrooms.AI
         {
             if (player == null || eyePoint == null) return false;
 
+            bool isCrouching = playerMovement != null && playerMovement.IsCrouching;
+            float effectiveRange = isCrouching ? detectionRange * crouchDetectionMultiplier : detectionRange;
+            float effectiveAngle = isCrouching ? detectionAngle * crouchDetectionMultiplier : detectionAngle;
+
+            if (playerBreathing != null && playerBreathing.IsHeavyBreathing)
+            {
+                effectiveRange *= heavyBreathingRangeMultiplier;
+            }
+
             Vector3 targetPoint = player.position + Vector3.up * playerHeightOffset;
             Vector3 toPlayer = targetPoint - eyePoint.position;
             float distance = toPlayer.magnitude;
 
-            if (distance > detectionRange) return false;
+            if (distance > effectiveRange) return false;
 
             Vector3 flatToPlayer = new Vector3(toPlayer.x, 0f, toPlayer.z);
             float angle = Vector3.Angle(transform.forward, flatToPlayer);
-            if (angle > detectionAngle * 0.5f) return false;
+            if (angle > effectiveAngle * 0.5f) return false;
 
-            if (Physics.Raycast(eyePoint.position, toPlayer.normalized, out RaycastHit hit, detectionRange, ~0, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(eyePoint.position, toPlayer.normalized, out RaycastHit hit, effectiveRange, ~0, QueryTriggerInteraction.Ignore))
             {
                 if (!hit.collider.CompareTag("Player"))
                 {

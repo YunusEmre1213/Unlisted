@@ -2156,6 +2156,7 @@ GameObject:
   - component: {fileID: 902527889}
   - component: {fileID: 902527888}
   - component: {fileID: 902527892}
+  - component: {fileID: 902527893}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2194,13 +2195,17 @@ MonoBehaviour:
   walkSpeed: 4
   sprintSpeed: 7
   crouchSpeed: 2
+  maxStamina: 100
+  staminaDrainRate: 20
+  staminaRegenRate: 15
+  crouchRegenMultiplier: 1.5
+  sprintReenableThreshold: 25
   jumpHeight: 1.2
   gravity: -9.81
   jumpStartClip: {fileID: 8300000, guid: df49938a1860650418b6d5654ed436be, type: 3}
   jumpLandClip: {fileID: 8300000, guid: 37cdbcb02c3324849ac457dfc5b1058e, type: 3}
   jumpVolume: 0.6
   minAirTimeForLandSound: 0.15
-  cameraTransform: {fileID: 961739753}
   standingControllerHeight: 1.8
   crouchingControllerHeight: 1
   standingControllerCenter: {x: 0, y: 1, z: 0}
@@ -2278,6 +2283,27 @@ MonoBehaviour:
   crouchStepInterval: 0.7
   crouchVolume: 0.2
   minMoveSpeed: 0.1
+--- !u!114 &902527893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 902527887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af52e058a60f91444958b3071f021a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Backrooms.Player.PlayerBreathing
+  lightBreathingThreshold: 0.6
+  heavyBreathingThreshold: 0.25
+  calmClip: {fileID: 8300000, guid: 0237fbb9bcc7e454bacdd447eb83ea31, type: 3}
+  lightClip: {fileID: 8300000, guid: c44b42ea90981364c92ec23ce6f0235e, type: 3}
+  heavyClip: {fileID: 8300000, guid: e887a178775b1394d863a1688f69cbdc, type: 3}
+  calmVolume: 0.15
+  lightVolume: 0.3
+  heavyVolume: 0.5
+  crossfadeDuration: 0.8
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -2290,6 +2316,7 @@ GameObject:
   - component: {fileID: 961739752}
   - component: {fileID: 961739751}
   - component: {fileID: 961739750}
+  - component: {fileID: 961739754}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2416,6 +2443,33 @@ Transform:
   - {fileID: 306553123}
   m_Father: {fileID: 902527891}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &961739754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961739749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b9454d4564cddf478a3a4d23d38f25c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Backrooms.Player.CameraHeadBob
+  playerMovement: {fileID: 902527889}
+  controller: {fileID: 902527890}
+  walkFrequency: 6
+  walkVerticalAmplitude: 0.05
+  walkHorizontalAmplitude: 0.025
+  runFrequency: 10
+  runVerticalAmplitude: 0.08
+  runHorizontalAmplitude: 0.04
+  crouchFrequency: 4
+  crouchVerticalAmplitude: 0.02
+  crouchHorizontalAmplitude: 0.01
+  exhaustedJitterAmount: 0.015
+  landDipAmount: 0.12
+  landDipRecoverySpeed: 6
+  blendSpeed: 8
 --- !u!1 &1030326241
 GameObject:
   m_ObjectHideFlags: 0
@@ -3535,6 +3589,8 @@ MonoBehaviour:
   detectionAngle: 60
   requiredDetectionTime: 1.5
   playerHeightOffset: 1
+  crouchDetectionMultiplier: 0.6
+  heavyBreathingRangeMultiplier: 1.3
   loseSightTime: 2
   patrolSpeed: 1.5
   chaseSpeed: 4
@@ -4572,6 +4628,8 @@ MonoBehaviour:
   detectionAngle: 60
   requiredDetectionTime: 1.5
   playerHeightOffset: 1
+  crouchDetectionMultiplier: 0.6
+  heavyBreathingRangeMultiplier: 1.3
   loseSightTime: 4
   patrolSpeed: 1.5
   chaseSpeed: 4
@@ -6052,6 +6110,8 @@ MonoBehaviour:
   detectionAngle: 60
   requiredDetectionTime: 1.5
   playerHeightOffset: 1
+  crouchDetectionMultiplier: 0.6
+  heavyBreathingRangeMultiplier: 1.3
   loseSightTime: 4
   patrolSpeed: 1.5
   chaseSpeed: 4
