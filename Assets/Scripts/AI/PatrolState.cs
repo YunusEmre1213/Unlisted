@@ -1,36 +1,39 @@
 using UnityEngine;
+using UnityEngine.AI;
 using Backrooms.Core;
 
 namespace Backrooms.AI
 {
-    public class PassiveState : IState
+    public class PatrolState : IState
     {
         private readonly ThreatController controller;
-        private int currentPatrolIndex;
         private float detectionTimer;
+        private float waitTimer;
 
-        public PassiveState(ThreatController controller)
+        public PatrolState(ThreatController controller)
         {
             this.controller = controller;
         }
 
         public void Enter()
         {
-            Debug.Log("[ThreatState] Pasif varlik durumuna gecildi");
+            Debug.Log("[ThreatState] Devriyeye basladi");
             EventBus.Publish(new ThreatStateChangedEvent(ThreatStateType.Passive));
 
             detectionTimer = 0f;
             controller.Agent.speed = controller.PatrolSpeed;
-            MoveToNextPatrolPoint();
+            PickNewWanderPoint();
         }
 
         public void Tick()
         {
-            if (controller.PatrolPoints != null && controller.PatrolPoints.Length > 0)
+            if (!controller.Agent.pathPending && controller.Agent.remainingDistance < 0.5f)
             {
-                if (!controller.Agent.pathPending && controller.Agent.remainingDistance < 0.5f)
+                waitTimer -= Time.deltaTime;
+
+                if (waitTimer <= 0f)
                 {
-                    MoveToNextPatrolPoint();
+                    PickNewWanderPoint();
                 }
             }
 
@@ -51,15 +54,20 @@ namespace Backrooms.AI
 
         public void Exit()
         {
-            Debug.Log("[ThreatState] Pasif varlik durumundan cikildi");
+            Debug.Log("[ThreatState] Devriye sona erdi");
         }
 
-        private void MoveToNextPatrolPoint()
+        private void PickNewWanderPoint()
         {
-            if (controller.PatrolPoints == null || controller.PatrolPoints.Length == 0) return;
+            Vector3 randomDirection = Random.insideUnitSphere * controller.WanderRadius;
+            randomDirection += controller.transform.position;
 
-            controller.Agent.destination = controller.PatrolPoints[currentPatrolIndex].position;
-            currentPatrolIndex = (currentPatrolIndex + 1) % controller.PatrolPoints.Length;
+            if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, controller.WanderRadius, NavMesh.AllAreas))
+            {
+                controller.Agent.destination = hit.position;
+            }
+
+            waitTimer = Random.Range(2f, 5f);
         }
     }
 }

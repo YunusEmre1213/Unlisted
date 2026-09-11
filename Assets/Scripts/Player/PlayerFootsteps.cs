@@ -21,6 +21,7 @@ namespace Backrooms.Player
         [SerializeField] private float crouchVolume = 0.2f;
 
         [SerializeField] private float minMoveSpeed = 0.1f;
+        [SerializeField] private PlayerHiding playerHiding;
 
         private CharacterController controller;
         private PlayerMovement playerMovement;
@@ -37,6 +38,12 @@ namespace Backrooms.Player
 
         private void Update()
         {
+            if (playerHiding != null && playerHiding.IsHiding)
+            {
+                stepTimer = 0f;
+                return;
+            }
+
             Vector3 horizontalVelocity = new Vector3(controller.velocity.x, 0f, controller.velocity.z);
 
             if (controller.isGrounded && horizontalVelocity.magnitude > minMoveSpeed)

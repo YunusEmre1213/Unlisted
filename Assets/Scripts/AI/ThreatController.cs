@@ -10,49 +10,49 @@ namespace Backrooms.AI
         [Header("Referanslar")]
         [SerializeField] private Transform player;
         [SerializeField] private Transform eyePoint;
-        [SerializeField] private Transform[] patrolPoints;
 
         [Header("Algilama Ayarlari")]
-        [SerializeField] private float detectionRange = 10f;
-        [SerializeField] private float detectionAngle = 60f;
+        [SerializeField] private float detectionRange = 12f;
+        [SerializeField] private float detectionAngle = 70f;
         [SerializeField] private float requiredDetectionTime = 1.5f;
         [SerializeField] private float playerHeightOffset = 1f;
         [SerializeField] private float crouchDetectionMultiplier = 0.6f;
         [SerializeField] private float heavyBreathingRangeMultiplier = 1.3f;
 
         [Header("Vazgecme Ayarlari")]
-        [SerializeField] private float loseSightTime = 4f;
+        [SerializeField] private float loseSightTime = 5f;
 
-        [Header("Hareket Hizlari")]
+        [Header("Devriye")]
         [SerializeField] private float patrolSpeed = 1.5f;
-        [SerializeField] private float chaseSpeed = 4f;
+        [SerializeField] private float wanderRadius = 8f;
+
+        [Header("Kovalama")]
+        [SerializeField] private float chaseSpeed = 4.5f;
 
         public NavMeshAgent Agent { get; private set; }
         public Transform Player => player;
-        public Transform[] PatrolPoints => patrolPoints;
         public float DetectionRange => detectionRange;
         public float DetectionAngle => detectionAngle;
         public float RequiredDetectionTime => requiredDetectionTime;
         public float LoseSightTime => loseSightTime;
         public float PatrolSpeed => patrolSpeed;
+        public float WanderRadius => wanderRadius;
         public float ChaseSpeed => chaseSpeed;
 
         private StateMachine stateMachine;
-
-        private FakeClueState fakeClueState;
-        private PassiveState passiveState;
+        private PatrolState patrolState;
         private ActiveChaseState activeChaseState;
 
         private PlayerMovement playerMovement;
         private PlayerBreathing playerBreathing;
+        private PlayerHiding playerHiding;
 
         private void Awake()
         {
             Agent = GetComponent<NavMeshAgent>();
 
             stateMachine = new StateMachine();
-            fakeClueState = new FakeClueState();
-            passiveState = new PassiveState(this);
+            patrolState = new PatrolState(this);
             activeChaseState = new ActiveChaseState(this);
         }
 
@@ -71,47 +71,43 @@ namespace Backrooms.AI
             {
                 playerMovement = player.GetComponent<PlayerMovement>();
                 playerBreathing = player.GetComponent<PlayerBreathing>();
+                playerHiding = player.GetComponent<PlayerHiding>();
             }
-
-            ChangeState(passiveState);
         }
 
         private void Update()
         {
             stateMachine.Tick();
-
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                ChangeState(fakeClueState);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                ChangeState(passiveState);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                ChangeState(activeChaseState);
-            }
         }
 
-        public void ChangeState(IState newState)
+        public void Ambush(Vector3 spawnPosition, Quaternion spawnRotation)
         {
-            stateMachine.ChangeState(newState);
+            gameObject.SetActive(true);
+
+            if (Agent != null)
+            {
+                Agent.Warp(spawnPosition);
+            }
+
+            transform.rotation = spawnRotation;
+
+            stateMachine.ChangeState(patrolState);
         }
 
-        public void ChangeToPassive()
+        public void ChangeToPatrol()
         {
-            ChangeState(passiveState);
+            stateMachine.ChangeState(patrolState);
         }
 
         public void ChangeToActiveChase()
         {
-            ChangeState(activeChaseState);
+            stateMachine.ChangeState(activeChaseState);
         }
 
         public bool CanSeePlayer()
         {
             if (player == null || eyePoint == null) return false;
+            if (playerHiding != null && playerHiding.IsHiding) return false;
 
             bool isCrouching = playerMovement != null && playerMovement.IsCrouching;
             float effectiveRange = isCrouching ? detectionRange * crouchDetectionMultiplier : detectionRange;

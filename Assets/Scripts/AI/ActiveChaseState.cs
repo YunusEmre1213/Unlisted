@@ -39,7 +39,7 @@ namespace Backrooms.AI
 
                 if (loseSightTimer >= controller.LoseSightTime)
                 {
-                    controller.ChangeToPassive();
+                    controller.ChangeToPatrol();
                 }
             }
         }
@@ -47,6 +47,7 @@ namespace Backrooms.AI
         public void Exit()
         {
             Debug.Log("[ThreatState] Aktif kovalama sona erdi");
+            EventBus.Publish(new ThreatStateChangedEvent(ThreatStateType.Passive));
         }
     }
 }

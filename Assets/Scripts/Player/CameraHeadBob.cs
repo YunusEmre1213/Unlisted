@@ -33,6 +33,9 @@ namespace Backrooms.Player
 
         [Header("Genel")]
         [SerializeField] private float blendSpeed = 8f;
+        [SerializeField] private PlayerHiding playerHiding;
+
+        public Vector3 ShakeOffset { get; set; }
 
         private Vector3 baseHorizontalPosition;
         private float bobTimer;
@@ -63,8 +66,9 @@ namespace Backrooms.Player
 
         private void Update()
         {
+            bool isHiding = playerHiding != null && playerHiding.IsHiding;
             Vector3 horizontalVelocity = new Vector3(controller.velocity.x, 0f, controller.velocity.z);
-            bool isMoving = controller.isGrounded && horizontalVelocity.magnitude > 0.1f;
+            bool isMoving = !isHiding && controller.isGrounded && horizontalVelocity.magnitude > 0.1f;
 
             float targetFrequency = walkFrequency;
             float targetVerticalAmplitude = 0f;
@@ -116,7 +120,7 @@ namespace Backrooms.Player
             float finalX = baseHorizontalPosition.x + horizontalBob;
             float finalZ = baseHorizontalPosition.z;
 
-            transform.localPosition = new Vector3(finalX, finalHeight, finalZ);
+            transform.localPosition = new Vector3(finalX, finalHeight, finalZ) + ShakeOffset;
         }
     }
 }
