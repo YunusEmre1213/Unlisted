@@ -19,12 +19,21 @@ namespace Backrooms.AI
         [SerializeField] private float crouchDetectionMultiplier = 0.6f;
         [SerializeField] private float heavyBreathingRangeMultiplier = 1.3f;
 
-        [Header("Vazgecme Ayarlari")]
-        [SerializeField] private float loseSightTime = 5f;
+        [Header("Duyma Ayarlari")]
+        [SerializeField] private float hearingRadius = 15f;
+
+        [Header("Kovalama/Arama Gecisleri")]
+        [SerializeField] private float chaseGraceTime = 0.4f;
+        [SerializeField] private float loseSightTime = 6f;
 
         [Header("Devriye")]
         [SerializeField] private float patrolSpeed = 1.5f;
         [SerializeField] private float wanderRadius = 8f;
+        [SerializeField] private float lookAroundSpeed = 60f;
+
+        [Header("Arama")]
+        [SerializeField] private float searchSpeed = 2.5f;
+        [SerializeField] private float searchRadius = 4f;
 
         [Header("Kovalama")]
         [SerializeField] private float chaseSpeed = 4.5f;
@@ -34,14 +43,19 @@ namespace Backrooms.AI
         public float DetectionRange => detectionRange;
         public float DetectionAngle => detectionAngle;
         public float RequiredDetectionTime => requiredDetectionTime;
+        public float ChaseGraceTime => chaseGraceTime;
         public float LoseSightTime => loseSightTime;
         public float PatrolSpeed => patrolSpeed;
         public float WanderRadius => wanderRadius;
+        public float LookAroundSpeed => lookAroundSpeed;
+        public float SearchSpeed => searchSpeed;
+        public float SearchRadius => searchRadius;
         public float ChaseSpeed => chaseSpeed;
 
         private StateMachine stateMachine;
         private PatrolState patrolState;
         private ActiveChaseState activeChaseState;
+        private SearchState searchState;
 
         private PlayerMovement playerMovement;
         private PlayerBreathing playerBreathing;
@@ -54,6 +68,7 @@ namespace Backrooms.AI
             stateMachine = new StateMachine();
             patrolState = new PatrolState(this);
             activeChaseState = new ActiveChaseState(this);
+            searchState = new SearchState(this);
         }
 
         private void Start()
@@ -104,6 +119,12 @@ namespace Backrooms.AI
             stateMachine.ChangeState(activeChaseState);
         }
 
+        public void ChangeToSearch(Vector3 lastKnownPosition)
+        {
+            searchState.SetSearchOrigin(lastKnownPosition);
+            stateMachine.ChangeState(searchState);
+        }
+
         public bool CanSeePlayer()
         {
             if (player == null || eyePoint == null) return false;
@@ -137,6 +158,16 @@ namespace Backrooms.AI
             }
 
             return true;
+        }
+
+        public bool CanHearPlayer()
+        {
+            if (player == null) return false;
+            if (playerHiding != null && playerHiding.IsHiding) return false;
+            if (playerBreathing == null || !playerBreathing.IsHeavyBreathing) return false;
+
+            float distance = Vector3.Distance(transform.position, player.position);
+            return distance <= hearingRadius;
         }
 
         private void OnDrawGizmos()

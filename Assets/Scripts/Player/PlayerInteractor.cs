@@ -20,7 +20,11 @@ namespace Backrooms.Player
         {
             if (playerHiding != null && playerHiding.IsHiding)
             {
-                playerHiding.ExitHiding();
+                if (playerHiding.CurrentSpot != null)
+                {
+                    playerHiding.CurrentSpot.RequestExit();
+                }
+
                 return;
             }
 

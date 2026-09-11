@@ -27,9 +27,12 @@ namespace Backrooms.AI
 
         public void Tick()
         {
-            if (!controller.Agent.pathPending && controller.Agent.remainingDistance < 0.5f)
+            bool hasArrived = !controller.Agent.pathPending && controller.Agent.remainingDistance < 0.5f;
+
+            if (hasArrived)
             {
                 waitTimer -= Time.deltaTime;
+                controller.transform.Rotate(Vector3.up, controller.LookAroundSpeed * Time.deltaTime);
 
                 if (waitTimer <= 0f)
                 {
@@ -44,11 +47,17 @@ namespace Backrooms.AI
                 if (detectionTimer >= controller.RequiredDetectionTime)
                 {
                     controller.ChangeToActiveChase();
+                    return;
                 }
             }
             else
             {
                 detectionTimer = 0f;
+            }
+
+            if (controller.CanHearPlayer())
+            {
+                controller.ChangeToSearch(controller.Player.position);
             }
         }
 

@@ -6,7 +6,8 @@ namespace Backrooms.AI
     public class ActiveChaseState : IState
     {
         private readonly ThreatController controller;
-        private float loseSightTimer;
+        private Vector3 lastKnownPosition;
+        private float sightLostTimer;
 
         public ActiveChaseState(ThreatController controller)
         {
@@ -18,28 +19,30 @@ namespace Backrooms.AI
             Debug.Log("[ThreatState] Aktif kovalama basladi");
             EventBus.Publish(new ThreatStateChangedEvent(ThreatStateType.ActiveChase));
 
-            loseSightTimer = 0f;
+            sightLostTimer = 0f;
             controller.Agent.speed = controller.ChaseSpeed;
+
+            if (controller.Player != null)
+            {
+                lastKnownPosition = controller.Player.position;
+            }
         }
 
         public void Tick()
         {
-            if (controller.Player != null)
-            {
-                controller.Agent.destination = controller.Player.position;
-            }
-
             if (controller.CanSeePlayer())
             {
-                loseSightTimer = 0f;
+                sightLostTimer = 0f;
+                lastKnownPosition = controller.Player.position;
+                controller.Agent.destination = lastKnownPosition;
             }
             else
             {
-                loseSightTimer += Time.deltaTime;
+                sightLostTimer += Time.deltaTime;
 
-                if (loseSightTimer >= controller.LoseSightTime)
+                if (sightLostTimer >= controller.ChaseGraceTime)
                 {
-                    controller.ChangeToPatrol();
+                    controller.ChangeToSearch(lastKnownPosition);
                 }
             }
         }
@@ -47,7 +50,6 @@ namespace Backrooms.AI
         public void Exit()
         {
             Debug.Log("[ThreatState] Aktif kovalama sona erdi");
-            EventBus.Publish(new ThreatStateChangedEvent(ThreatStateType.Passive));
         }
     }
 }

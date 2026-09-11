@@ -10,6 +10,7 @@ namespace Backrooms.Player
         [SerializeField] private float maxPitch = 80f;
 
         private float pitch;
+        private bool yawLocked;
 
         private void Start()
         {
@@ -22,11 +23,19 @@ namespace Backrooms.Player
             float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
             float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-            transform.Rotate(Vector3.up * mouseX);
+            if (!yawLocked)
+            {
+                transform.Rotate(Vector3.up * mouseX);
+            }
 
             pitch -= mouseY;
             pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
             cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        }
+
+        public void SetYawLocked(bool locked)
+        {
+            yawLocked = locked;
         }
     }
 }
