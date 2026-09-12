@@ -4,6 +4,7 @@ namespace Backrooms.AI
     {
         FakeClue,
         Passive,
+        Searching,
         ActiveChase
     }
 }

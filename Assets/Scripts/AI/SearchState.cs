@@ -24,6 +24,7 @@ namespace Backrooms.AI
         public void Enter()
         {
             Debug.Log("[ThreatState] Son bilinen konuma gidiliyor, arama basladi");
+            EventBus.Publish(new ThreatStateChangedEvent(ThreatStateType.Searching));
 
             searchTimer = 0f;
             nextLookTimer = 0f;
