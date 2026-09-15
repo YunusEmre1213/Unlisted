@@ -1,5 +1,6 @@
 using UnityEngine;
 using Backrooms.Core;
+using Backrooms.UI;
 
 namespace Backrooms.Player
 {
@@ -18,13 +19,15 @@ namespace Backrooms.Player
 
         private void TryInteract()
         {
+            if (NoteReaderUI.Instance != null && NoteReaderUI.Instance.IsOpen)
+            {
+                NoteReaderUI.Instance.Hide();
+                return;
+            }
+
             if (playerHiding != null && playerHiding.IsHiding)
             {
-                if (playerHiding.CurrentSpot != null)
-                {
-                    playerHiding.CurrentSpot.RequestExit();
-                }
-
+                playerHiding.ExitHiding();
                 return;
             }
 

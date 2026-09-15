@@ -84,6 +84,16 @@ namespace Backrooms.Player
             }
         }
 
+        public void ForceOff()
+        {
+            isOn = false;
+
+            if (flashlightLight != null)
+            {
+                flashlightLight.enabled = false;
+            }
+        }
+
         private void Toggle()
         {
             if (currentBattery <= 0f)
