@@ -21,9 +21,11 @@ namespace Backrooms.Player
         [SerializeField] private float refillAmount = 100f;
 
         private bool isOn = false;
+        private bool hasFlashlight = false;
         private float currentBattery;
 
         public float BatteryPercent => currentBattery / maxBattery;
+        public bool HasFlashlight => hasFlashlight;
 
         private void Start()
         {
@@ -38,6 +40,8 @@ namespace Backrooms.Player
 
         private void Update()
         {
+            if (!hasFlashlight) return;
+
             if (Input.GetKeyDown(KeyCode.F))
             {
                 Toggle();
@@ -84,16 +88,6 @@ namespace Backrooms.Player
             }
         }
 
-        public void ForceOff()
-        {
-            isOn = false;
-
-            if (flashlightLight != null)
-            {
-                flashlightLight.enabled = false;
-            }
-        }
-
         private void Toggle()
         {
             if (currentBattery <= 0f)
@@ -129,6 +123,21 @@ namespace Backrooms.Player
             if (toggleAudioSource != null)
             {
                 toggleAudioSource.Play();
+            }
+        }
+
+        public void Acquire()
+        {
+            hasFlashlight = true;
+        }
+
+        public void ForceOff()
+        {
+            isOn = false;
+
+            if (flashlightLight != null)
+            {
+                flashlightLight.enabled = false;
             }
         }
     }
