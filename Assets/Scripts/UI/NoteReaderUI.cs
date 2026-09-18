@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 using Backrooms.Player;
@@ -15,6 +16,7 @@ namespace Backrooms.UI
         [SerializeField] private PlayerLook playerLook;
 
         public bool IsOpen { get; private set; }
+        public event Action OnClosed;
 
         private void Awake()
         {
@@ -51,6 +53,8 @@ namespace Backrooms.UI
 
             if (playerMovement != null) playerMovement.enabled = true;
             if (playerLook != null) playerLook.enabled = true;
+
+            OnClosed?.Invoke();
         }
     }
 }

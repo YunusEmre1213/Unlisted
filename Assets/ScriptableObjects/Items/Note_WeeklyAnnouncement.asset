@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f5cbad4ed7681584599edbc49787d64a, type: 3}
-  m_Name: Wallet
+  m_Name: Note_WeeklyAnnouncement
   m_EditorClassIdentifier: Assembly-CSharp::Backrooms.Items.ItemData
-  itemId: wallet
-  displayName: "C\xFCzdan"
-  description: "C\xFCzdan\u0131m.\r\n\r\nKimlik kart\u0131 yok.\r\nNakit yok.\r\n\r\nSadece
-    bir foto\u011Fraf\u0131n k\xF6\u015Fesi kalm\u0131\u015F \u2014 kenar\u0131ndan
-    y\u0131rt\u0131lm\u0131\u015F, geri kalan\u0131 yok. Kimin foto\u011Fraf\u0131yd\u0131?"
+  itemId: note_weekly_announcement
+  displayName: Duyuru
+  description: "Haftal\u0131k Duyuru:\n- 118 numaral\u0131 masa i\xE7in d\xFCzenleme
+    talebi onayland\u0131\n- Depo anahtarlar\u0131 resepsiyonda teslim edilecek\n-
+    Kahve makinesi tamir edildi\n- Herkese haftaya iyi \xE7al\u0131\u015Fmalar"
   category: 1
