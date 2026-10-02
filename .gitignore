@@ -36,3 +36,6 @@ crashlytics-build.properties
 
 
 /[Pp]ackages/com.unity.*.tgz
+# Unity sablon artigi, oyunla ilgisi yok
+/Assets/TutorialInfo/
+/Assets/TutorialInfo.meta
