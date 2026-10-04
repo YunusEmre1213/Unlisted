@@ -9,6 +9,8 @@ namespace Backrooms.Player
 {
     public class ThreatVisualDistortion : MonoBehaviour
     {
+        public static ThreatVisualDistortion Instance { get; private set; }
+
         [SerializeField] private Volume volume;
         [SerializeField] private float transitionSpeed = 2f;
         [SerializeField] private float fakeClueRevertDelay = 4f;
@@ -45,6 +47,8 @@ namespace Backrooms.Player
 
         private void Awake()
         {
+            Instance = this;
+
             volume.profile.TryGet(out filmGrain);
             volume.profile.TryGet(out chromaticAberration);
             volume.profile.TryGet(out vignette);
@@ -65,24 +69,38 @@ namespace Backrooms.Player
 
         private void OnThreatStateChanged(ThreatStateChangedEvent evt)
         {
-            stateVersion++;
-
             switch (evt.NewState)
             {
                 case ThreatStateType.Passive:
+                    stateVersion++;
                     SetTargetsCalm();
                     break;
                 case ThreatStateType.Searching:
+                    stateVersion++;
                     SetTargetsUnease();
                     break;
                 case ThreatStateType.ActiveChase:
+                    stateVersion++;
                     SetTargetsDanger();
                     break;
                 case ThreatStateType.FakeClue:
-                    SetTargetsUnease();
-                    StartCoroutine(RevertToCalmAfterDelay(stateVersion, fakeClueRevertDelay));
+                    PulseUnease(fakeClueRevertDelay);
                     break;
             }
+        }
+
+        public void PulseUnease(float duration)
+        {
+            stateVersion++;
+            SetTargetsUnease();
+            StartCoroutine(RevertToCalmAfterDelay(stateVersion, duration));
+        }
+
+        public void PulseDanger(float duration)
+        {
+            stateVersion++;
+            SetTargetsDanger();
+            StartCoroutine(RevertToCalmAfterDelay(stateVersion, duration));
         }
 
         private IEnumerator RevertToCalmAfterDelay(int expectedVersion, float delay)

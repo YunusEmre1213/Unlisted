@@ -11,22 +11,23 @@ namespace Backrooms.Player
 
         private float nextBlinkTime;
 
-        private void Start()
+        private void OnEnable()
         {
             ScheduleNextBlink();
         }
 
         private void Update()
         {
-            if (Time.time >= nextBlinkTime)
-            {
-                if (ScreenBlink.Instance != null)
-                {
-                    ScreenBlink.Instance.Blink(blinkDuration);
-                }
+            if (Time.time < nextBlinkTime) return;
 
-                ScheduleNextBlink();
+            ScreenBlink blink = ScreenBlink.Instance;
+
+            if (blink != null && !blink.IsBlinking)
+            {
+                blink.Blink(blinkDuration);
             }
+
+            ScheduleNextBlink();
         }
 
         private void ScheduleNextBlink()

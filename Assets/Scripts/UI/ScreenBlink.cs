@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Backrooms.UI
@@ -11,6 +12,17 @@ namespace Backrooms.UI
         [SerializeField] private RectTransform topLid;
         [SerializeField] private RectTransform bottomLid;
         [SerializeField] private float closedHeightRatio = 0.55f;
+
+        private struct BlinkRequest
+        {
+            public float Duration;
+            public Action OnPeakDarkness;
+        }
+
+        private readonly Queue<BlinkRequest> requestQueue = new Queue<BlinkRequest>();
+        private Coroutine processingCoroutine;
+
+        public bool IsBlinking => processingCoroutine != null;
 
         private void Awake()
         {
@@ -25,7 +37,23 @@ namespace Backrooms.UI
 
         public void Blink(float duration, Action onPeakDarkness = null)
         {
-            StartCoroutine(BlinkRoutine(duration, onPeakDarkness));
+            requestQueue.Enqueue(new BlinkRequest { Duration = duration, OnPeakDarkness = onPeakDarkness });
+
+            if (processingCoroutine == null)
+            {
+                processingCoroutine = StartCoroutine(ProcessQueue());
+            }
+        }
+
+        private IEnumerator ProcessQueue()
+        {
+            while (requestQueue.Count > 0)
+            {
+                BlinkRequest request = requestQueue.Dequeue();
+                yield return StartCoroutine(BlinkRoutine(request.Duration, request.OnPeakDarkness));
+            }
+
+            processingCoroutine = null;
         }
 
         private IEnumerator BlinkRoutine(float duration, Action onPeakDarkness)
