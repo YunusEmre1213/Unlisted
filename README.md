@@ -156,10 +156,10 @@ sequenceDiagram
 | -------------------- | ----------------------------- |
 | `W A S D`            | Hareket                       |
 | `Shift` (basılı tut) | Koşma                         |
-| `[CTRL]`             | Eğilme                        |
+| `CTRL`               | Eğilme                        |
 | `E`                  | Etkileşim / eşya toplama      |
 | `F`                  | Feneri aç/kapat               |
-| `[R]`                | Feneri pille doldurma         |
+| `R`                  | Feneri pille doldurma         |
 | `Tab`                | Günlüğü aç/kapat              |
 | `Esc`                | Duraklat                      |
 
