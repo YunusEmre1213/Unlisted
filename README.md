@@ -17,7 +17,7 @@ Birinci şahıs, kısa ve atmosferik bir liminal space korku oyunu — Unity 6 /
 
 ## Genel Bakış
 
-**Unlisted**, solo geliştirilen, yaklaşık **45-50 dakikalık**, baştan sona oynanıp bitirilebilecek şekilde kapsamı bilinçli olarak küçük tutulmuş bir korku oyunudur. Backrooms / liminal space estetiğinden ilham alır; ancak salt "kaç ve saklan" döngüsüne indirgenmek yerine **keşif, obje toplama, çevresel anlatı ve kaynak (fener pili) yönetimini** bir arada sunar.
+**Unlisted**, solo geliştirilen, yaklaşık **20-25dakikalık**, baştan sona oynanıp bitirilebilecek şekilde kapsamı bilinçli olarak küçük tutulmuş bir korku oyunudur. Backrooms / liminal space estetiğinden ilham alır; ancak salt "kaç ve saklan" döngüsüne indirgenmek yerine **keşif, obje toplama, çevresel anlatı ve kaynak (fener pili) yönetimini** bir arada sunar.
 
 
 
